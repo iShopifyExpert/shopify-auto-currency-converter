@@ -1,0 +1,48 @@
+{%- comment -%}https://gist.github.com/carolineschnapp/773649{%- endcomment -%}
+{%- assign supported_codes = settings.supported_currencies | split: '|' -%}
+{%- assign codes = 'USD,EUR,GBP,CAD,ARS,AUD,BBD,BDT,BSD,BHD,BRL,BOB,BND,BGN,ILS,MMK,KYD,CLP,CNY,COP,CRC,HRK,CZK,DKK,DOP,XCD,EGP,XPF,FJD,GHS,GTQ,GYD,GEL,HKD,HUF,ISK,INR,IDR,NIS,JMD,JPY,JOD,KZT,KES,KWD,LVL,LTL,MXN,MYR,MUR,MDL,MAD,MNT,MZN,ANG,NZD,NGN,NOK,OMR,PKR,PYG,PEN,PHP,PLN,QAR,RON,RUB,SAR,RSD,SCR,SGD,SYP,ZAR,KRW,LKR,SEK,CHF,TWD,THB,TZS,TTD,TRY,UAH,AED,UYU,VEB,VND,ZMK' | split: ',' -%}
+{%- assign check = true -%}
+{%- unless currency_header -%}
+{%- assign currency_header = false -%}
+{%- endunless -%}
+{%- for code in supported_codes -%}
+  {%- assign array_money = code | split: '-' -%}
+  {%- assign data_currency = array_money | first | upcase | strip -%}
+  {%- assign name_money = array_money | last | strip -%}
+  {%- if data_currency == shop.currency and codes contains data_currency -%}
+     {%- assign check = false -%}
+     {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if currency_header -%}
+<ul>
+     {%- if check and codes contains shop.currency -%}
+         <li><a data-currency="{{ shop.currency }}" class="currency-item cw chp selected" href="javascript:void(0);">{{ shop.currency }}</a></li>
+      {%- endif -%}
+      {%- for code in supported_codes -%}
+           {%- assign array_money = code | split: '-' -%}
+           {%- assign data_currency = array_money | first | upcase | strip -%}
+           {%- assign name_money = array_money | last | strip -%}
+           {%- if codes contains data_currency -%}
+            <li><a data-currency="{%- if data_currency contains 'EUR' -%}EUR{%- else -%}{{data_currency}}{%- endif -%}" class="currency-item chp{%- if shop.currency == data_currency %} selected{%- endif -%}" href="javascript:void(0);">{{ name_money }}</a></li>
+           {%- endif -%}
+      {% endfor %}
+   </ul>
+{%- else -%}
+<div class="jas-currency dib pr currencies">
+   <span class="current"><span class="selected-currency">{{ shop.currency }}</span><i class="fa fa-angle-down ml__5"></i></span>
+   <ul class="pa ts__03">
+     {%- if check and codes contains shop.currency -%}
+         <li><a data-currency="{{ shop.currency }}" class="currency-item {{top_color}} chp selected" href="javascript:void(0);">{{ shop.currency }}</a></li>
+      {%- endif -%}
+      {%- for code in supported_codes -%}
+           {%- assign array_money = code | split: '-' -%}
+           {%- assign data_currency = array_money | first | upcase | strip -%}
+           {%- assign name_money = array_money | last | strip -%}
+           {%- if codes contains data_currency -%}
+            <li><a data-currency="{%- if data_currency contains 'EUR' -%}EUR{%- else -%}{{data_currency}}{%- endif -%}" class="currency-item {{top_color}} chp{%- if shop.currency == data_currency %} selected{%- endif -%}" href="javascript:void(0);">{{ name_money }}</a></li>
+           {%- endif -%}
+      {% endfor %}
+   </ul>
+</div>
+{%- endif -%}
